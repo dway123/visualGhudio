@@ -1,8 +1,6 @@
-import wget
 import datetime
-from wget import download
 import os
-
+from urllib.request import Request, urlopen
 
 filename = "<year>-0<month>-0<day>-<hour>.json.gz"
 
@@ -20,5 +18,5 @@ print(filename)
 print(" from url: ")
 print(url)
 
-#filename = wget.download(url, out=outputDirectory)
-urllib.urlretrieve(url, outputDirectory + "/" + filename)
+req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+webpage = urlopen(req).read()
