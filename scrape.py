@@ -1,5 +1,3 @@
-import datetime
-
 import wget
 import datetime
 from wget import download
