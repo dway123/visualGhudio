@@ -4,8 +4,8 @@ from wget import download
 import os
 
 fileExt = ".json.gz"
-
 fileTitle = datetime.datetime.now().strftime("%Y-%m-%d-{0..23}")
+
 fileName = fileTitle + fileExt
 
 url = "http://data.gharchive.org/" + fileName
