@@ -1,11 +1,9 @@
-import wget
 import datetime
-from wget import download
 import os
+from urllib.request import Request, urlopen
 
-fileExt = ".json.gz"
 fileTitle = datetime.datetime.now().strftime("%Y-%m-%d-{0..23}")
-
+fileExt = ".json.gz"
 fileName = fileTitle + fileExt
 
 url = "http://data.gharchive.org/" + fileName
@@ -16,5 +14,5 @@ print(fileName)
 print(" from url: ")
 print(url)
 
-#filename = wget.download(url, out=outputDirectory)
-urllib.urlretrieve(url, outputDirectory + "/" + fileName)
+req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+webpage = urlopen(req).read()
