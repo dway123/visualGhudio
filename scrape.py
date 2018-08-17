@@ -1,8 +1,12 @@
-import datetime
-import os
+from datetime import datetime, timedelta
 from urllib.request import Request, urlopen
 
-fileTitle = datetime.datetime.now().strftime("%Y-%m-%d-{0..23}")
+# We look at 1 hour delayed data.
+delayedTime = datetime.utcnow() - timedelta(hours=1)
+
+# fileTitle, for example, should be 2018-08-15-2 for 2018/8/15 2AM.
+# Month and day is zero padded but hour is not zero padded.
+fileTitle = delayedTime.strftime("%Y-%m-%d-") + delayedTime.strftime("%H").replace('0', '', 1)
 fileExt = ".json.gz"
 fileName = fileTitle + fileExt
 
