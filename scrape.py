@@ -2,19 +2,15 @@ import datetime
 import os
 from urllib.request import Request, urlopen
 
-filename = "<year>-0<month>-0<day>-<hour>.json.gz"
+fileTitle = datetime.datetime.now().strftime("%Y-%m-%d-{0..23}")
+fileExt = ".json.gz"
+fileName = fileTitle + fileExt
 
-today = datetime.datetime.today()
-filename = filename.replace("<year>" , str(today.year))
-filename = filename.replace("<month>", str(today.month))
-filename = filename.replace("<day>"  , str(today.day))
-filename = filename.replace("<hour>" , "0")#"{0..23}") #today.hour
-
-url = "http://data.gharchive.org/" + filename
+url = "http://data.gharchive.org/" + fileName
 outputDirectory = "files"
 
 print("Retrieving file: ")
-print(filename)
+print(fileName)
 print(" from url: ")
 print(url)
 
