@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from urllib.request import Request, urlopen
 import gzip
+import json
 
 # We look at 1 hour delayed data.
 delayedTime = datetime.utcnow() - timedelta(hours=2)
@@ -25,4 +26,12 @@ response = urlopen(request)
 compressedFile = response.read()
 decompressedFile = gzip.decompress(compressedFile)
 
-print(decompressedFile)
+#TODO: Interpret this data as a string! That should fix the JSON interpreting problems, as the data is't a valid file
+print(type(decompressedFile))
+data = decompressedFile.decode('utf-8').replace('\n', '')
+print(type(data))
+
+jsonData = json.loads(data)
+
+print(jsonData["payload"]["pull_request"]["head"]["repo"]["languages_url"])
+#print(decompressedFile)
