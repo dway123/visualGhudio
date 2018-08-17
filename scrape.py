@@ -1,5 +1,4 @@
 import datetime
-import os
 from urllib.request import Request, urlopen
 
 fileTitle = datetime.datetime.now().strftime("%Y-%m-%d-{0..23}")
