@@ -3,22 +3,18 @@ import datetime
 from wget import download
 import os
 
+fileExt = ".json.gz"
+fileTitle = datetime.datetime.now().strftime("%Y-%m-%d-{0..23}")
 
-filename = "<year>-0<month>-0<day>-<hour>.json.gz"
+fileName = fileTitle + fileExt
 
-today = datetime.datetime.today()
-filename = filename.replace("<year>" , str(today.year))
-filename = filename.replace("<month>", str(today.month))
-filename = filename.replace("<day>"  , str(today.day))
-filename = filename.replace("<hour>" , "0")#"{0..23}") #today.hour
-
-url = "http://data.gharchive.org/" + filename
+url = "http://data.gharchive.org/" + fileName
 outputDirectory = "files"
 
 print("Retrieving file: ")
-print(filename)
+print(fileName)
 print(" from url: ")
 print(url)
 
 #filename = wget.download(url, out=outputDirectory)
-urllib.urlretrieve(url, outputDirectory + "/" + filename)
+urllib.urlretrieve(url, outputDirectory + "/" + fileName)
