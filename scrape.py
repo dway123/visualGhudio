@@ -1,6 +1,6 @@
-import gzip
 from datetime import datetime, timedelta
 from urllib.request import Request, urlopen
+import gzip
 
 # We look at 1 hour delayed data.
 delayedTime = datetime.utcnow() - timedelta(hours=2)
@@ -26,4 +26,3 @@ compressedFile = response.read()
 decompressedFile = gzip.decompress(compressedFile)
 
 print(decompressedFile)
-
