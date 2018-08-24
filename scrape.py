@@ -27,26 +27,24 @@ def get_response(url):
 def get_languages_url_from_json(json_data):
     try:
         return json_data["payload"]["pull_request"]["head"]["repo"]["languages_url"]
-    except KeyError:
+    except KeyError: # Likely missing "pull_request" key, but may be others in the json_data
         #print("KeyError")
         return None
-    except TypeError:
-        print("TypeError")
-        print("json_data is " + str(json_data) if json_data is not None else "None")
+    except TypeError: # "None" or other non-json datatype within json_data
+        #print("TypeError")
         return None
     except:
-        print("Some generic error")
-        print("json_data is " + str(json_data) if json_data is not None else "None")
+        print("Unhandled error!")
         return None
-
 
 def load_json(data):
     try:
         return json.loads(data)
+    except json.decoder.JSONDecodeError: # Wrong data format from nonconformant input data 
+        #print("DataError")
+        return None
     except:
-        print("DataError")
-        print("data is " + str(data) if data is not None else "None")
-        print(type(data) if data is not None else "None")
+        print("Unhandled error!")
         return None
 
 # We look at 1 hour delayed data.
@@ -64,7 +62,12 @@ for data in data_list:
     if language_url is not None:
         language_urls.append(language_url)
 
-print(language_urls)
+#print(language_urls)
+language_response = get_response(language_urls[0])
+print(language_response)
+selected_response = json.loads(language_response.decode('ascii'))
 
-print(get_response(language_urls[0]))
-print(type(get_response(language_urls[0])))
+print(str(selected_response))
+print(type(selected_response))
+
+print(selected_response["Go"])
