@@ -56,18 +56,25 @@ response = get_response(url)
 data_file = gzip.decompress(response)
 data_list = data_file.decode('utf-8').split('\n')
 
-language_urls = []
+language_urls = set() 
+language_frequency = dict()
 for data in data_list:
     language_url = get_languages_url_from_json(load_json(data))
     if language_url is not None:
-        language_urls.append(language_url)
+        # Only process languages from this url if it's not yet processed
+        if language_url not in language_urls:
+           languages = load_json(get_response(language_url).decode('ascii'))
+           total_lines = sum(languages.values())
+           for language in languages:
+              # Insert proportion of lines in this language into language_frequency
+              if language not in language_frequency:
+                  language_frequency[language] = 0
+              language_frequency[language] += languages[language]/total_lines
 
-#print(language_urls)
-language_response = get_response(language_urls[0])
-print(language_response)
-selected_response = json.loads(language_response.decode('ascii'))
+        language_urls.add(language_url)
 
-print(str(selected_response))
-print(type(selected_response))
 
-print(selected_response["Go"])
+total_lines = sum(language_frequency.values())
+for language in language_frequency: 
+    language_frequency[language] /= total_lines
+print(str(language_frequency))
