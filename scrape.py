@@ -2,6 +2,9 @@ from datetime import datetime, timedelta
 from urllib.request import Request, urlopen
 import gzip
 import json
+import random
+
+USER_AGENT_LIST = ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5)', 'AppleWebKit/537.36 (KHTML, like Gecko)', 'Chrome/55.0.2883.95', 'Safari/537.36']
 
 
 def get_file_title_with_date(target_date) :
@@ -18,7 +21,8 @@ def get_url(prefix, file_title, extension=None) :
 
 
 def get_response(url):
-    request = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    user_agent = random.choice(USER_AGENT_LIST) 
+    request = Request(url, headers={'User-Agent':user_agent})
     response = urlopen(request)
 
     return response.read()
@@ -56,6 +60,8 @@ response = get_response(url)
 data_file = gzip.decompress(response)
 data_list = data_file.decode('utf-8').split('\n')
 
+print("Including duplicates, total possible requests: " + str(len(data_list)))
+i = 0
 language_urls = set() 
 language_frequency = dict()
 for data in data_list:
@@ -63,6 +69,8 @@ for data in data_list:
     if language_url is not None:
         # Only process languages from this url if it's not yet processed
         if language_url not in language_urls:
+           i += 1
+           print("Successful requests: " + str(i))
            languages = load_json(get_response(language_url).decode('ascii'))
            total_lines = sum(languages.values())
            for language in languages:
@@ -71,8 +79,7 @@ for data in data_list:
                   language_frequency[language] = 0
               language_frequency[language] += languages[language]/total_lines
 
-        language_urls.add(language_url)
-
+           language_urls.add(language_url)
 
 total_lines = sum(language_frequency.values())
 for language in language_frequency: 
