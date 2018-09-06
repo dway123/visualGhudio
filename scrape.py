@@ -3,6 +3,13 @@ from urllib.request import Request, urlopen
 import gzip
 import json
 import urllib
+import configparser
+
+
+# Parse configs
+config = configparser.ConfigParser()
+config.read('config.txt')
+
 
 def get_file_title_with_date(target_date) :
     return target_date.strftime("%Y-%m-%d-") + target_date.strftime("%H").replace('0', '', 1)
@@ -21,7 +28,10 @@ def get_response(url, auth):
     request = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
 
     if auth:
-        request.add_header('Authorization', "token YOUR_TOKEN")
+        if 'github.com' in config and 'PersonalToken' in config['github.com']:
+            request.add_header('Authorization', "token " + config['github.com']['PersonalToken'])
+        else:
+            raise AttributeError('No personal token found in configuration file. Add your personal token in config.txt file.')
 
     response = urlopen(request)
 
