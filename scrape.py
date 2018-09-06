@@ -2,6 +2,9 @@ from datetime import datetime, timedelta
 from urllib.request import Request, urlopen
 import gzip
 import json
+import random
+
+USER_AGENT_LIST = ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5)', 'AppleWebKit/537.36 (KHTML, like Gecko)', 'Chrome/55.0.2883.95', 'Safari/537.36']
 
 
 def get_file_title_with_date(target_date) :
@@ -18,7 +21,8 @@ def get_url(prefix, file_title, extension=None):
 
 
 def get_response(url, auth):
-    request = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    user_agent = random.choice(USER_AGENT_LIST)
+    request = Request(url, headers={'User-Agent': user_agent})
 
     if auth:
         request.add_header('Authorization', "token YOUR_TOKEN")
@@ -41,6 +45,7 @@ def get_languages_url_from_json(json_data):
         print("Unhandled error!")
         return None
 
+
 def load_json(data):
     try:
         return json.loads(data)
@@ -51,6 +56,7 @@ def load_json(data):
         print("Unhandled error!")
         return None
 
+
 # We look at 1 hour delayed data.
 delayed_time = datetime.utcnow() - timedelta(hours=2)
 title = get_file_title_with_date(delayed_time)
@@ -59,6 +65,7 @@ print(url)
 response = get_response(url, False)
 data_file = gzip.decompress(response)
 data_list = data_file.decode('utf-8').split('\n')
+
 
 # Set up for getting language distribution
 language_urls = set() 
