@@ -2,9 +2,6 @@ from datetime import datetime, timedelta
 from urllib.request import Request, urlopen
 import gzip
 import json
-import random
-
-USER_AGENT_LIST = ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5)', 'AppleWebKit/537.36 (KHTML, like Gecko)', 'Chrome/55.0.2883.95', 'Safari/537.36']
 
 
 def get_file_title_with_date(target_date) :
@@ -21,8 +18,7 @@ def get_url(prefix, file_title, extension=None):
 
 
 def get_response(url, auth):
-    user_agent = random.choice(USER_AGENT_LIST)
-    request = Request(url, headers={'User-Agent': user_agent})
+    request = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
 
     if auth:
         request.add_header('Authorization', "token YOUR_TOKEN")
@@ -90,8 +86,8 @@ for data in data_list:
                     language_frequency[language] += languages[language]/total_lines
 
                 language_urls.add(language_url)
-            except:
-                print(language_url + " failed")
+            except Exception as e:
+                print(language_url + " failed with " + str(e))
 
 print("Total unique repositories read is " + str(len(language_urls)))
 
