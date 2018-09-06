@@ -37,8 +37,8 @@ def get_languages_url_from_json(json_data):
     except TypeError: # "None" or other non-json datatype within json_data
         #print("TypeError")
         return None
-    except:
-        print("Unhandled error!")
+    except Exception as e:
+        print("Unhandled error: " + e)
         return None
 
 
@@ -48,8 +48,8 @@ def load_json(data):
     except json.decoder.JSONDecodeError: # Wrong data format from nonconformant input data 
         #print("DataError")
         return None
-    except:
-        print("Unhandled error!")
+    except Exception as e:
+        print("Unhandled error: " + e)
         return None
 
 
@@ -89,7 +89,7 @@ for data in data_list:
             except urllib.error.HTTPError as e:
                 print(language_url + " failed with " + str(e))
             except Exception as e:
-                print("Unhandled error! " + e) 
+                print("Unhandled error: " + e) 
 
 print("Total unique repositories read is " + str(len(language_urls)))
 
