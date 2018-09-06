@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from urllib.request import Request, urlopen
 import gzip
 import json
-
+import urllib
 
 def get_file_title_with_date(target_date) :
     return target_date.strftime("%Y-%m-%d-") + target_date.strftime("%H").replace('0', '', 1)
@@ -86,8 +86,10 @@ for data in data_list:
                     language_frequency[language] += languages[language]/total_lines
 
                 language_urls.add(language_url)
-            except Exception as e:
+            except urllib.error.HTTPError as e:
                 print(language_url + " failed with " + str(e))
+            except Exception as e:
+                print("Unhandled error! " + e) 
 
 print("Total unique repositories read is " + str(len(language_urls)))
 
