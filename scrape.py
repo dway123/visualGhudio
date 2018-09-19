@@ -4,6 +4,7 @@ import gzip
 import json
 import urllib
 import configparser
+from pymongo import MongoClient
 
 
 # Parse configs
@@ -63,6 +64,16 @@ def load_json(data):
         return None
 
 
+def mongodb_test():
+    uri = config['mongodb.com']['ConnectionString']
+    client = MongoClient(uri)
+    db = client['sf-031']
+    collection = db['languages']
+    post = {"test" : "hello"}
+    post_id = collection.insert_one(post).inserted_id
+    print(post_id)
+
+
 # We look at 1 hour delayed data.
 delayed_time = datetime.utcnow() - timedelta(hours=2)
 title = get_file_title_with_date(delayed_time)
@@ -74,7 +85,7 @@ data_list = data_file.decode('utf-8').split('\n')
 
 
 # Set up for getting language distribution
-language_urls = set() 
+language_urls = set()
 language_frequency = dict()
 counter = 0
 print("Total lines of data is " + str(len(data_list)))
@@ -99,11 +110,11 @@ for data in data_list:
             except urllib.error.HTTPError as e:
                 print(language_url + " failed with " + str(e))
             except Exception as e:
-                print("Unhandled error: " + e) 
+                print("Unhandled error: " + e)
 
 print("Total unique repositories read is " + str(len(language_urls)))
 
 total_lines = sum(language_frequency.values())
-for language in language_frequency: 
+for language in language_frequency:
     language_frequency[language] /= total_lines
 print(str(language_frequency))

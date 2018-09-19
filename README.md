@@ -11,3 +11,8 @@ let's see how it goes
 [github.com]
 PersonalToken = $YOUR_PERSONAL_TOKEN
 ```
+2. Setup a MongoDB and add your MongoDB connection string (URI) as follows; replace $CONNECTION_STRING
+```
+[mongodb.com]
+ConnectionString = $CONNECTION_STRING
+```
