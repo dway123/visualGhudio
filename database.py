@@ -1,3 +1,8 @@
+import configparser
+from pymongo import MongoClient
+
+CONFIG_NAME = "config.txt"
+
 class Singleton(type):
     _instances = {}
     def __call__(cls, *args, **kwargs):
@@ -5,13 +10,23 @@ class Singleton(type):
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
 
-class Logger(metaclass=Singleton):
+class Database(metaclass=Singleton):
     def __init__(self):
+        config = configparser.ConfigParser()
+        config.read(CONFIG_NAME)
+
         # Parse and connect to database
+        uri = config['mongodb.com']['ConnectionString']
+        db_name = config['mongodb.com']['DbName']
+        collection_name = config['mongodb.com']['CollectionName']
+        client = MongoClient(uri)
+        db = client[db_name]
+        collection = db[collection_name]
 
-        # Handle connection errors gracefully
-    def tryPrint(self):
-        print("HI")
+    def insert(self, key, value):
+        post = {key : value}
+        post_id = collection.insert_one(post).inserted_id
 
-logger = Logger()
-logger.tryPrint()
+database = Database()
+
+database.insert(123,456);
