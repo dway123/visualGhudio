@@ -66,9 +66,11 @@ def load_json(data):
 
 def mongodb_test():
     uri = config['mongodb.com']['ConnectionString']
+    db_name = config['mongodb.com']['DbName']
+    collection_name = config['mongodb.com']['CollectionName']
     client = MongoClient(uri)
-    db = client['sf-031']
-    collection = db['languages']
+    db = client[db_name]
+    collection = db[collection_name]
     post = {"test" : "hello"}
     post_id = collection.insert_one(post).inserted_id
     print(post_id)
@@ -118,3 +120,4 @@ total_lines = sum(language_frequency.values())
 for language in language_frequency:
     language_frequency[language] /= total_lines
 print(str(language_frequency))
+
