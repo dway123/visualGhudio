@@ -76,49 +76,48 @@ def mongodb_test():
     print(post_id)
 
 
-mongodb_test()
-# # We look at 1 hour delayed data.
-# delayed_time = datetime.utcnow() - timedelta(hours=2)
-# title = get_file_title_with_date(delayed_time)
-# url = get_url("http://data.gharchive.org/", title, "json.gz")
-# print(url)
-# response = get_response(url, False)
-# data_file = gzip.decompress(response)
-# data_list = data_file.decode('utf-8').split('\n')
-#
-#
-# # Set up for getting language distribution
-# language_urls = set()
-# language_frequency = dict()
-# counter = 0
-# print("Total lines of data is " + str(len(data_list)))
-#
-# for data in data_list:
-#     language_url = get_languages_url_from_json(load_json(data))
-#     if language_url is not None:
-#         # Only process languages from this url if it's not yet processed
-#         if language_url not in language_urls:
-#             try:
-#                 languages = load_json(get_response(language_url, True).decode('ascii'))
-#                 #print(counter)
-#                 #counter += 1
-#                 total_lines = sum(languages.values())
-#                 for language in languages:
-#                     # Insert proportion of lines in this language into language_frequency
-#                     if language not in language_frequency:
-#                         language_frequency[language] = 0
-#                     language_frequency[language] += languages[language]/total_lines
-#
-#                 language_urls.add(language_url)
-#             except urllib.error.HTTPError as e:
-#                 print(language_url + " failed with " + str(e))
-#             except Exception as e:
-#                 print("Unhandled error: " + e)
-#
-# print("Total unique repositories read is " + str(len(language_urls)))
-#
-# total_lines = sum(language_frequency.values())
-# for language in language_frequency:
-#     language_frequency[language] /= total_lines
-# print(str(language_frequency))
+# We look at 1 hour delayed data.
+delayed_time = datetime.utcnow() - timedelta(hours=2)
+title = get_file_title_with_date(delayed_time)
+url = get_url("http://data.gharchive.org/", title, "json.gz")
+print(url)
+response = get_response(url, False)
+data_file = gzip.decompress(response)
+data_list = data_file.decode('utf-8').split('\n')
+
+
+# Set up for getting language distribution
+language_urls = set()
+language_frequency = dict()
+counter = 0
+print("Total lines of data is " + str(len(data_list)))
+
+for data in data_list:
+    language_url = get_languages_url_from_json(load_json(data))
+    if language_url is not None:
+        # Only process languages from this url if it's not yet processed
+        if language_url not in language_urls:
+            try:
+                languages = load_json(get_response(language_url, True).decode('ascii'))
+                #print(counter)
+                #counter += 1
+                total_lines = sum(languages.values())
+                for language in languages:
+                    # Insert proportion of lines in this language into language_frequency
+                    if language not in language_frequency:
+                        language_frequency[language] = 0
+                    language_frequency[language] += languages[language]/total_lines
+
+                language_urls.add(language_url)
+            except urllib.error.HTTPError as e:
+                print(language_url + " failed with " + str(e))
+            except Exception as e:
+                print("Unhandled error: " + e)
+
+print("Total unique repositories read is " + str(len(language_urls)))
+
+total_lines = sum(language_frequency.values())
+for language in language_frequency:
+    language_frequency[language] /= total_lines
+print(str(language_frequency))
 
