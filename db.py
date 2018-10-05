@@ -22,11 +22,7 @@ class Database(metaclass=Singleton):
         client = MongoClient(uri)
         db = client[db_name]
         self.collection = db[collection_name]
-
-    def insert(self, key, value):
-        post = {key : value}
+    
+    #post should be in json format
+    def insert(self, post):
         post_id = self.collection.insert_one(post).inserted_id
-
-# # Test
-# database = Database()
-# database.insert('sure', 'I can');
