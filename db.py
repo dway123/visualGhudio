@@ -21,12 +21,12 @@ class Database(metaclass=Singleton):
         collection_name = config['mongodb.com']['CollectionName']
         client = MongoClient(uri)
         db = client[db_name]
-        collection = db[collection_name]
+        self.collection = db[collection_name]
 
     def insert(self, key, value):
         post = {key : value}
-        post_id = collection.insert_one(post).inserted_id
+        post_id = self.collection.insert_one(post).inserted_id
 
-database = Database()
-
-database.insert(123,456);
+# # Test
+# database = Database()
+# database.insert('sure', 'I can');
