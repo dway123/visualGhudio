@@ -155,7 +155,7 @@ for data in data_list:
             except urllib.error.HTTPError as e:
                 print(language_url + " failed with " + str(e))
             except Exception as e:
-                print("Unhandled error: " + e)
+                print("Unhandled error: " + str(e))
 
 print("Total unique repositories read is " + str(len(language_urls)))
 
