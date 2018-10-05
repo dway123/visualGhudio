@@ -9,7 +9,7 @@ from pymongo import MongoClient
 
 # Parse configs
 config = configparser.ConfigParser()
-config.read('config.txt')
+config.read('../resource/config.txt')
 
 
 def get_file_title_with_date(target_date) :
@@ -76,19 +76,6 @@ def load_json(data):
     except Exception as e:
         print("Unhandled error: " + e)
         return None
-
-
-def mongodb_test():
-    uri = config['mongodb.com']['ConnectionString']
-    db_name = config['mongodb.com']['DbName']
-    collection_name = config['mongodb.com']['CollectionName']
-    client = MongoClient(uri)
-    db = client[db_name]
-    collection = db[collection_name]
-    post = {"test" : "hello"}
-    post_id = collection.insert_one(post).inserted_id
-    print(post_id)
-
 
 # We look at 1 hour delayed data.
 delayed_time = datetime.utcnow() - timedelta(hours=2)
