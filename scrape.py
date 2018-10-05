@@ -39,6 +39,20 @@ def get_response(url, auth):
     return response.read()
 
 
+def get_repo_id_from_json(json_data):
+    try:
+        return json_data["repo"]["id"]
+    except KeyError: # missing either "repo" or "id" keys
+        #print("KeyError")
+        return None
+    except TypeError: # "None" or other non-json datatype within json_data
+        #print("TypeError")
+        return None
+    except Exception as e:
+        print("Unhandled error: " + e)
+        return None
+
+
 def get_languages_url_from_json(json_data):
     try:
         return json_data["payload"]["pull_request"]["head"]["repo"]["languages_url"]
