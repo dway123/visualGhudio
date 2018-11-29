@@ -1,14 +1,17 @@
 import configparser
 from pymongo import MongoClient
 
-CONFIG_NAME = "config.txt"
+CONFIG_NAME = "../resource/config.txt"
+
 
 class Singleton(type):
     _instances = {}
+
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
+
 
 class Database(metaclass=Singleton):
     def __init__(self):
@@ -23,6 +26,6 @@ class Database(metaclass=Singleton):
         db = client[db_name]
         self.collection = db[collection_name]
     
-    #post should be in json format
+    # post should be in json format
     def insert(self, post):
         post_id = self.collection.insert_one(post).inserted_id
