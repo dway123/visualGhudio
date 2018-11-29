@@ -53,6 +53,20 @@ def get_repo_id_from_json(json_data):
         return None
 
 
+def get_repo_name_from_json(json_data):
+    try:
+        return json_data["repo"]["name"]
+    except KeyError: # missing either "repo" or "name" keys
+        #print("KeyError")
+        return None
+    except TypeError: # "None" or other non-json datatype within json_data
+        #print("TypeError")
+        return None
+    except Exception as e:
+        print("Unhandled error: " + e)
+        return None
+
+
 def get_languages_url_from_json(json_data):
     try:
         return json_data["payload"]["pull_request"]["head"]["repo"]["languages_url"]
@@ -77,6 +91,26 @@ def load_json(data):
         print("Unhandled error: " + e)
         return None
 
+
+def build_repo_metadata(repo_id, repo_name, language_url, number_lines):
+    repo_metadata = dict()
+    repo_metadata["repo_id"] = repo_id
+    repo_metadata["repo_name"] = repo_name
+    repo_metadata["language_url"] = language_url
+    repo_metadata["number_lines"] = number_lines
+
+    return repo_metadata
+
+
+def build_entry(timestamp, repo_metadata, languages):
+    entry = dict()
+    entry["timestamp"] = timestamp
+    entry["repo_metadata"] = repo_metadata
+    entry["languages"] = languages
+
+    return entry
+
+
 # We look at 1 hour delayed data.
 delayed_time = datetime.utcnow() - timedelta(hours=2)
 title = get_file_title_with_date(delayed_time)
@@ -89,25 +123,33 @@ data_list = data_file.decode('utf-8').split('\n')
 
 # Set up for getting language distribution
 language_urls = set()
-language_frequency = dict()
 counter = 0
 print("Total lines of data is " + str(len(data_list)))
 
 for data in data_list:
-    language_url = get_languages_url_from_json(load_json(data))
+    loaded_json = load_json(data)
+
+    repo_id = get_repo_id_from_json(loaded_json)
+    repo_name = get_repo_name_from_json(loaded_json)
+
+    language_url = get_languages_url_from_json(loaded_json)
     if language_url is not None:
         # Only process languages from this url if it's not yet processed
         if language_url not in language_urls:
             try:
+                language_frequency = dict()
+
                 languages = load_json(get_response(language_url, True).decode('ascii'))
-                #print(counter)
-                #counter += 1
-                total_lines = sum(languages.values())
+
+                # Get total lines
+                number_lines = sum(languages.values())
+
                 for language in languages:
                     # Insert proportion of lines in this language into language_frequency
-                    if language not in language_frequency:
-                        language_frequency[language] = 0
-                    language_frequency[language] += languages[language]/total_lines
+                    language_frequency[language] = languages[language]/number_lines
+
+                repo_metadata = build_repo_metadata(repo_id, repo_name, language_url, number_lines)
+                entry = build_entry(delayed_time, repo_metadata, language_frequency)
 
                 language_urls.add(language_url)
             except urllib.error.HTTPError as e:
