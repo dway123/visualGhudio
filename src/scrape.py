@@ -160,10 +160,12 @@ for data in data_list:
             except Exception as e:
                 print("Unhandled error: " + str(e))
 
+# TODO: throw this into the db
 print("Total unique repositories read is " + str(len(language_urls)))
 
 total_lines = sum(language_frequency.values())
 for language in language_frequency:
     language_frequency[language] /= total_lines
+# TODO: throw this into the db too
 print(str(language_frequency))
 
