@@ -4,7 +4,7 @@ import gzip
 import json
 import urllib
 import configparser
-from pymongo import MongoClient
+import db
 
 
 # Parse configs
@@ -148,8 +148,11 @@ for data in data_list:
                     # Insert proportion of lines in this language into language_frequency
                     language_frequency[language] = languages[language]/number_lines
 
+                # Build entry and insert it to the db
                 repo_metadata = build_repo_metadata(repo_id, repo_name, language_url, number_lines)
                 entry = build_entry(delayed_time, repo_metadata, language_frequency)
+                database = db.Database()
+                database.insert(entry)
 
                 language_urls.add(language_url)
             except urllib.error.HTTPError as e:
